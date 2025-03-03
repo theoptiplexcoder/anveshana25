@@ -38,9 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'resume_analyzer',
     'rest_framework',
-    'corsheaders'
+    'corsheaders',
+    'resume_analyzer',
+    'authentication',
+
 ]
 
 

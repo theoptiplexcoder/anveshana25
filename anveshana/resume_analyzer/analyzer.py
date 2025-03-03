@@ -2,9 +2,10 @@ import pdfplumber
 from mistralai import Mistral
 from dotenv import load_dotenv
 import os,json
-
+import json
+import re
 from .models import JobDescription
-
+import ast
 
 #load .env
 load_dotenv()
@@ -21,7 +22,7 @@ def resume_extractor(pdf_path):
 
 def resume_analyzer_with_llm(resume,job_description)->dict:
     prompt=f"""
-    You are an AI bot which will help humans analyze their resume based on the latest job descriptions required for a specific role and analyze the following details given their resume and job_description of a job. You should be able to extract the following details:
+    Provide a text JSON object by analyze the resume uploaded with context to the latest job descriptions required for a specific role and analyze the following details given their resume and job_description of a job. You should be able to extract the following details:
     1. Identify all skills mentioned in the resume
     2. Calculate the total number of years of experience
     3. Categorise the projects in the resume based on their domains (Ex: Web development, AI engineer, data science, Machine Learning etc...)
@@ -30,13 +31,14 @@ def resume_analyzer_with_llm(resume,job_description)->dict:
     resume:{resume}
     Job Description:{job_description}
 
-    Provide the output in the form of JSON in the following structure:
+    Provide the output as a json object in the following format:
     {{
         "rank":<percentage>,
         "skills":[skill1,skill2,......],
         "total_experience":<Number of years>,
         "project_categories":[caregory1,category2,category3,.....],
     }}
+    Return only the json object 
     """
 
     try:
@@ -53,7 +55,7 @@ def resume_analyzer_with_llm(resume,job_description)->dict:
                         
                     ],
                 )
-        print(chat_response.choices[0].message.content)
+        return chat_response.choices[0].message.content
     except Exception as e:
         print(e)
 
@@ -61,5 +63,7 @@ def process_resume(pdf_path,job_desription):
     resume=resume_extractor(pdf_path)
     job_desription=JobDescription.objects.get(id=job_desription).description
     result=resume_analyzer_with_llm(resume,job_desription)
+    result= re.sub(r'```(?:json)?\n?', '', result)
     return result
+
 
