@@ -3,3 +3,4 @@ django-rest-framework
 pdfplumber
 mistralai
 python-dotenv
+django-cors-headers

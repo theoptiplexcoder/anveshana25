@@ -26,13 +26,13 @@ class ResumeUploadView(APIView):
             return Response({
                 'status':False,
                 'message':'Please upload resume',
-                data:{}
+                'data':{}
             })
         if 'job_description' not in request.data.keys():
             return Response({
                 'status':False,
                 'message':'Please specify the job description',
-                data:{}
+                'data':{}
             })
         job_description=_data['job_description']
         pdf=Resume(file=request.FILES['resume'])
