@@ -1,0 +1,5 @@
+django
+django-rest-framework
+pdfplumber
+mistralai
+python-dotenv
